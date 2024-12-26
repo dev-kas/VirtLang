@@ -1,3 +1,4 @@
+import { ParserError } from "./errors.js";
 import { Stmt, Program, Expr, BinaryExpr, NumericLiteral, Identifier, VarDeclaration, VarAssignmentExpr, Property, ObjectLiteral, CallExpr, MemberExpr, FnDeclaration, CompareExpr, IfStatement, StringLiteral, WhileLoop } from "./ast.js";
 import { tokenize, Token, TokenType } from "./lexer.js";
 
@@ -17,7 +18,7 @@ export default class Parser {
         const prev = this.tokens.shift();
         if (!prev || prev.type !== type) {
             console.error("Parser error: ", msg, prev, "Expected:", type);
-            process.exit(1);
+            throw new SyntaxError(`Expected ${type}, got ${prev?.type} at line ${prev?.line}, column ${prev?.col}`);
         }
         return prev;
     }
@@ -91,8 +92,7 @@ export default class Parser {
 
         for (const arg of args) {
             if (arg.type !== "Identifier") {
-                console.error("Error Parsing: Expected identifier, got: " + arg.type);
-                process.exit(1);
+                throw new SyntaxError("Expected identifier, got: " + arg.type);
             }
             params.push((arg as Identifier).symbol);
         }
@@ -286,8 +286,7 @@ export default class Parser {
                 property = this.parsePrimaryExpr();
 
                 if (property.type !== "Identifier") {
-                    console.error("Error Parsing: Expected identifier after '.', got: " + this.at().value);
-                    process.exit(1);
+                    throw new SyntaxError("Expected identifier, got: " + property.type);
                 }
             } else {
                 computed = true;
@@ -380,8 +379,7 @@ export default class Parser {
                 this.advance();
                 return this.parseExpr();
             default:
-                console.error(`Unexpected token to parse: ${this.at().value} at ${this.at().line}:${this.at().col}`);
-                process.exit(1);
+                throw new ParserError(`Unexpected token: ${this.at().value}`, this.at().line, this.at().col);
         }
     }
 }

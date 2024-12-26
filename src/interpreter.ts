@@ -3,6 +3,7 @@ import { BinaryExpr, CallExpr, CompareExpr, FnDeclaration, Identifier, IfStateme
 import Environment from "./environment.js";
 import { evalFnDecl, evalIfStmt, evalProgram, evalVarDecl, evalWhileLoop } from "./statements.js";
 import { evalBinEx, evalCallExpr, evalComEx, evalIdentifier, evalObjectExpr, evalVarAssignment, evalMemberExpr } from "./expressions.js";
+import { ParserError } from "./errors.js";
 
 export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
     switch (astNode.type) {
@@ -35,8 +36,7 @@ export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
         case "WhileLoop":
             return evalWhileLoop(astNode as WhileLoop, env);
         default:
-            console.log("Unknown AST Node:");
             console.dir(astNode, { depth: null, color: true });
-            process.exit(1);
+            throw new ParserError(`Unknown AST node type: ${astNode.type}`);
     }
 }

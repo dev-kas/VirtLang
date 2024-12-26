@@ -30,7 +30,7 @@ function start(r = false) {
     const input = readFileSync('./src/tmp.vl', 'utf-8');
 
     const program = parser.produceAST(input);
-    console.log(`Parsed program: ${JSON.stringify(program, null, 2)}`);
+    // console.log(`Parsed program: ${JSON.stringify(program, null, 2)}`);
     const result = evaluate(program, env);
     // console.log(`Result: ${JSON.stringify(result, null, 2)}`);
 

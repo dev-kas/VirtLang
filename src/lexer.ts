@@ -1,3 +1,5 @@
+import { LexerError } from "./errors.js";
+
 export enum TokenType {
     Number,         // 0 - 9
     Identifier,     // a - z A - Z
@@ -150,8 +152,7 @@ export function tokenize(srcCode: string): Token[] {
             } else if (isSkippable(src[0])) {
                 src.shift();
             } else {
-                console.error(`Unexpected character: ${src[0]} at ${currentLn}:${currentCol-1}`);
-                process.exit(1);
+                throw new LexerError(`Unexpected character: ${src[0]}`, currentLn, currentCol);
             }
         }
     }

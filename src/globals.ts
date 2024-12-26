@@ -1,3 +1,4 @@
+import { RuntimeError } from "./errors.js";
 import Environment from "./environment.js";
 import { MK_NATIVE_FN, MK_NIL, MK_NUMBER, MK_OBJECT, ObjectVal, RuntimeVal } from "./values.js";
 
@@ -47,12 +48,12 @@ export const math: RuntimeVal = MK_OBJECT({
     SQRT2: MK_NUMBER(Math.SQRT2),
 
     abs: MK_NATIVE_FN((args: RuntimeVal[], scope: Environment): RuntimeVal => {
-        if (args.length !== 1) { console.error("abs function expects exactly one argument"); process.exit(1); }
+        if (args.length !== 1) { throw new RuntimeError("`abs` function expects exactly one argument"); }
         const value = args[0].value;
 
         if (typeof value === 'number') {
             return MK_NUMBER(Math.abs(value));
-        } else { console.error("abs function expects a number as argument"); process.exit(1); }
+        } else { throw new RuntimeError("`abs` function expects a number as argument"); }
     }),
 });
 
@@ -72,8 +73,8 @@ export const array: RuntimeVal = MK_OBJECT({
         let arr = args[0] as ObjectVal;
         let element = args[1];
 
-        if (arr.type !== "object") { console.error("push function expects an object as first argument"); process.exit(1); }
-        if (element === undefined) { console.error("push function expects a second argument"); process.exit(1); }
+        if (arr.type !== "object") { throw new RuntimeError("`push` function expects an object as first argument"); }
+        if (element === undefined) { throw new RuntimeError("`push` function expects an element as second argument"); }
 
         arr.properties.set(arr.properties.size.toString(), element);
         return arr;
@@ -82,7 +83,7 @@ export const array: RuntimeVal = MK_OBJECT({
     pop: MK_NATIVE_FN((args: RuntimeVal[], scope: Environment): RuntimeVal => {
         let arr = args[0] as ObjectVal;
 
-        if (arr.type !== "object") { console.error("pop function expects an object as first argument"); process.exit(1); }
+        if (arr.type !== "object") { throw new RuntimeError("`pop` function expects an object as first argument"); }
 
         const lastElement = arr.properties.get((arr.properties.size - 1).toString());
         arr.properties.delete((arr.properties.size - 1).toString());
@@ -92,7 +93,7 @@ export const array: RuntimeVal = MK_OBJECT({
     length: MK_NATIVE_FN((args: RuntimeVal[], scope: Environment): RuntimeVal => {
         let arr = args[0] as ObjectVal;
 
-        if (arr.type !== "object") { console.error("length function expects an object as first argument"); process.exit(1); }
+        if (arr.type !== "object") { throw new RuntimeError("`length` function expects an object as first argument"); }
 
         return MK_NUMBER(arr.properties.size);
     }),
