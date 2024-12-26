@@ -31,21 +31,21 @@ export {
 //     }
 // }
 
-function start(r = false) {
-    const parser = new Parser();
-    const env = createGlobalEnv();
+// function start(r = false) {
+//     const parser = new Parser();
+//     const env = createGlobalEnv();
 
-    const input = readFileSync('./src/tmp.vl', 'utf-8');
+//     const input = readFileSync('./src/tmp.vl', 'utf-8');
 
-    const program = parser.produceAST(input);
-    console.dir(program, { depth: null, colors: true });
-    const result = evaluate(program, env);
-    // console.log(`Result: ${JSON.stringify(result, null, 2)}`);
+//     const program = parser.produceAST(input);
+//     console.dir(program, { depth: null, colors: true });
+//     const result = evaluate(program, env);
+//     // console.log(`Result: ${JSON.stringify(result, null, 2)}`);
 
-    // if (r) repl(env);
-}
+//     // if (r) repl(env);
+// }
 
-start(false);
+// start(false);
 // // repl();
 
 
