@@ -1,7 +1,7 @@
-import { evaluate } from "./interpreter.js";
-import { VarDeclaration, Program, FnDeclaration, IfStatement, WhileLoop } from "./ast.js";
+import { FnDeclaration, IfStatement, Program, VarDeclaration, WhileLoop } from "./ast.js";
 import Environment from "./environment.js";
-import { RuntimeVal, MK_NIL, FunctionValue, MK_BOOL } from "./values.js";
+import { evaluate } from "./interpreter.js";
+import { FunctionValue, MK_NIL, RuntimeVal } from "./values.js";
 
 export function evalProgram(program: Program, env: Environment): RuntimeVal {
     let result: RuntimeVal = MK_NIL();
@@ -24,10 +24,14 @@ export function evalFnDecl(declaration: FnDeclaration, env: Environment): Runtim
         name: declaration.name,
         params: declaration.params,
         declarationEnv: env,
-        body: declaration.body
+        body: declaration.body,
     } as FunctionValue;
 
-    return env.declareVar(declaration.name, fn, true);
+    if (declaration.anonymous) {
+        return fn;
+    } else {
+        return env.declareVar(declaration.name, fn, true);
+    }
 }
 
 export function evalIfStmt(statement: IfStatement, env: Environment): RuntimeVal {
@@ -41,7 +45,7 @@ export function evalIfStmt(statement: IfStatement, env: Environment): RuntimeVal
     const conditionSatisfied = evaluate(statement.condition, env);
     if (conditionSatisfied.type === "boolean" && conditionSatisfied.value) {
         for (const stmt of statement.body) {
-            evaluate(stmt, env);
+            evaluate(stmt, new Environment(env));
         }
     }
 
@@ -58,7 +62,7 @@ export function evalWhileLoop(statement: WhileLoop, env: Environment): RuntimeVa
 
     while (evaluate(statement.condition, env).type === "boolean" && evaluate(statement.condition, env).value) {
         for (const stmt of statement.body) {
-            evaluate(stmt, env);
+            evaluate(stmt, new Environment(env));
         }
     }
 

@@ -1,9 +1,9 @@
-import { RuntimeVal, MK_NUMBER, MK_STRING, MK_NIL } from "./values.js";
 import { BinaryExpr, CallExpr, CompareExpr, FnDeclaration, Identifier, IfStatement, MemberExpr, NumericLiteral, ObjectLiteral, Program, Stmt, StringLiteral, VarAssignmentExpr, VarDeclaration, WhileLoop } from "./ast.js";
 import Environment from "./environment.js";
-import { evalFnDecl, evalIfStmt, evalProgram, evalVarDecl, evalWhileLoop } from "./statements.js";
-import { evalBinEx, evalCallExpr, evalComEx, evalIdentifier, evalObjectExpr, evalVarAssignment, evalMemberExpr } from "./expressions.js";
 import { ParserError } from "./errors.js";
+import { evalBinEx, evalCallExpr, evalComEx, evalIdentifier, evalMemberExpr, evalObjectExpr, evalVarAssignment } from "./expressions.js";
+import { evalFnDecl, evalIfStmt, evalProgram, evalVarDecl, evalWhileLoop } from "./statements.js";
+import { MK_NUMBER, MK_STRING, RuntimeVal } from "./values.js";
 
 export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
     switch (astNode.type) {

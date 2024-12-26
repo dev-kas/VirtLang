@@ -1,6 +1,6 @@
-import { MK_BOOL, MK_NATIVE_FN, MK_NIL, MK_NUMBER, RuntimeVal, ObjectVal } from "./values.js";
-import { array, math, out, proc } from "./globals.js";
 import { RuntimeError } from "./errors.js";
+import { array, math, out, proc } from "./globals.js";
+import { MK_BOOL, MK_NIL, MK_NUMBER, RuntimeVal } from "./values.js";
 
 export function createGlobalEnv(): Environment {
     const env = new Environment();
@@ -33,6 +33,9 @@ export default class Environment {
     }
 
     public declareVar(varname: string, value: RuntimeVal, constant: boolean = false): RuntimeVal {
+        // FIXME: Investigate varname being empty str
+        if (varname === "") return value;
+
         if (this.variables.has(varname)) {
             throw new RuntimeError(`Variable ${varname} is already declared`);
         }
@@ -43,6 +46,9 @@ export default class Environment {
     }
 
     public assignVar(varname: string, value: RuntimeVal): RuntimeVal {
+        // FIXME: Investigate varname being empty str
+        if (varname === "") return value;
+
         const env = this.resolve(varname);
         if (env.constants.has(varname)) {
             throw new RuntimeError(`Cannot reassign constant ${varname}`);

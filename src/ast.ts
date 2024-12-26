@@ -37,6 +37,7 @@ export interface FnDeclaration extends Stmt {
     name: string;
     body: Stmt[];
     async: boolean; // TODO
+    anonymous: boolean;
 }
 
 export interface IfStatement extends Stmt {

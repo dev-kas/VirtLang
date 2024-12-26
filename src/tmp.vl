@@ -1,18 +1,28 @@
---> i am a comment
+const constant = "i am a constant variable"
+let volatile = "i am a volatile variable"
 
-out.print("Hello world this is some message")
+const console = {
+    log: fn (x) { out.print(x) },
+    err: fn (x) { out.error(x) },
+    advanced: {
+        print: fn (x) { out.print(x) },
+    }
+}
 
---> i am another comment
+console.log("Hello World!", "I am some unwanted arg")
+out.print("Hello World!", "I am some unwanted arg")
 
+console.err("Hello World!", "I am some unwanted arg")
+out.error("Hello World!", "I am some unwanted arg")
 
+if (true) {
+    let x = 9993
+}
 
---<
-some comments
-out.error("Error here")
-out.warn("Hello world this is a warning")
->--
+--> console.log(x) --> should throw error
 
+out.print("now we are testing some --< comment >-- stuff") 
+out.print("4 - 3 is", 4 - --< some comment >-- 3)
 
-
-
-out.print("Hello world this is some message 22")
+--> advanced stuff:
+console.advanced.print("Hello World!")

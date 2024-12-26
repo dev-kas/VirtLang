@@ -1,8 +1,8 @@
+import { BinaryExpr, CallExpr, CompareExpr, Expr, FnDeclaration, Identifier, IfStatement, MemberExpr, NumericLiteral, ObjectLiteral, Program, Property, Stmt, StringLiteral, VarAssignmentExpr, VarDeclaration, WhileLoop } from "./ast.js";
 import { ParserError } from "./errors.js";
-import { Stmt, Program, Expr, BinaryExpr, NumericLiteral, Identifier, VarDeclaration, VarAssignmentExpr, Property, ObjectLiteral, CallExpr, MemberExpr, FnDeclaration, CompareExpr, IfStatement, StringLiteral, WhileLoop } from "./ast.js";
-import { tokenize, Token, TokenType } from "./lexer.js";
+import { Token, tokenize, TokenType } from "./lexer.js";
 
-export default class Parser {
+export class Parser {
     private tokens: Token[] = [];
 
     private at(): Token {
@@ -18,7 +18,7 @@ export default class Parser {
         const prev = this.tokens.shift();
         if (!prev || prev.type !== type) {
             console.error("Parser error: ", msg, prev, "Expected:", type);
-            throw new SyntaxError(`Expected ${type}, got ${prev?.type} at line ${prev?.line}, column ${prev?.col}`);
+            throw new SyntaxError(`Expected ${TokenType[type]}, got ${TokenType[(prev as Token).type]} at line ${(prev as Token).line}, column ${(prev as Token).col}`);
         }
         return prev;
     }
@@ -43,7 +43,6 @@ export default class Parser {
     }
 
     private parseStmt(): Stmt {
-        // return this.parseExpr();
         switch (this.at().type) {
             case TokenType.Let:
             case TokenType.Const:
@@ -60,11 +59,11 @@ export default class Parser {
     private parseIfStmt(): Stmt {
         this.advance(); // if
 
-        this.expect(TokenType.OParen, "Error Parsing: Expected '(', got: " + this.at().value);
+        this.expect(TokenType.OParen, "Expected '(', got: " + this.at().value);
         const condition = this.parseExpr();
-        this.expect(TokenType.CParen, "Error Parsing: Expected ')', got: " + this.at().value);
+        this.expect(TokenType.CParen, "Expected ')', got: " + this.at().value);
 
-        this.expect(TokenType.OBrace, "Error Parsing: Expected '{', got: " + this.at().value);
+        this.expect(TokenType.OBrace, "Expected '{', got: " + this.at().value);
 
         const body: Stmt[] = [];
 
@@ -72,7 +71,7 @@ export default class Parser {
             body.push(this.parseStmt());
         }
 
-        this.expect(TokenType.CBrace, "Error Parsing: Expected '}', got: " + this.at().value);
+        this.expect(TokenType.CBrace, "Expected '}', got: " + this.at().value);
 
         const statement = {
             type: "IfStatement",
@@ -86,7 +85,10 @@ export default class Parser {
     private parseFnDecl(): Stmt {
         this.advance(); // fn
 
-        const name = this.expect(TokenType.Identifier, "Error Parsing: Expected identifier, got: " + this.at().value).value;
+        // const name = this.expect(TokenType.Identifier, "Expected identifier, got: " + this.at().value).value;
+        // (x) { out.pring(x) }
+        const name = this.at().type === TokenType.Identifier ? this.advance() : { type: TokenType.Identifier, value: "" } as Token;
+        const isAnonymous = name.type === TokenType.OParen;
         const args = this.parseArgs();
         const params: string[] = [];
 
@@ -97,7 +99,7 @@ export default class Parser {
             params.push((arg as Identifier).symbol);
         }
 
-        this.expect(TokenType.OBrace, "Error Parsing: Expected '{', got: " + this.at().value);
+        this.expect(TokenType.OBrace, "Expected '{', got: " + this.at().value);
 
         const body: Stmt[] = [];
 
@@ -105,14 +107,15 @@ export default class Parser {
             body.push(this.parseStmt());
         }
 
-        this.expect(TokenType.CBrace, "Error Parsing: Expected '}', got: " + this.at().value);
+        this.expect(TokenType.CBrace, "Expected '}', got: " + this.at().value);
 
         const fn = {
             type: "FnDeclaration",
             params,
-            name,
+            name: isAnonymous ? "" : name.value,
             body,
-            async: false
+            async: false,
+            anonymous: isAnonymous
         } as FnDeclaration;
 
         return fn;
@@ -120,9 +123,9 @@ export default class Parser {
 
     private parseVarDecl(): Stmt {
         const isConstant = this.advance().type === TokenType.Const;
-        const id = this.expect(TokenType.Identifier, "Error Parsing: Expected identifier, got: " + this.at().value).value;
+        const id = this.expect(TokenType.Identifier, "Expected identifier, got: " + this.at().value).value;
 
-        this.expect(TokenType.Equals, "Error Parsing: Expected '=', got: " + this.at().value);
+        this.expect(TokenType.Equals, "Expected '=', got: " + this.at().value);
         const declaration = {
             type: "VarDeclaration",
             constant: isConstant,
@@ -130,11 +133,14 @@ export default class Parser {
             value: this.parseExpr()
         }
 
-        // this.expect(TokenType.SemiColon, "Error Parsing: Expected ';', got: " + this.at().value);
+        // this.expect(TokenType.SemiColon, "Expected ';', got: " + this.at().value);
         return declaration as VarDeclaration;
     }
 
     private parseExpr(): Expr {
+        if (this.at().type === TokenType.Fn) {
+            return this.parseFnDecl();
+        }
         return this.parseAssignmentExpr();
     }
 
@@ -169,7 +175,7 @@ export default class Parser {
         const properties = new Array<Property>();
 
         while (!this.isEOF() && this.at().type !== TokenType.CBrace) {
-            const key = this.expect(TokenType.Identifier, "Error Parsing: Expected identifier, got: " + this.at().value).value;
+            const key = this.expect(TokenType.Identifier, "Expected identifier, got: " + this.at().value).value;
 
             if (this.at().type === TokenType.Comma) { // { key, }
                 this.advance();
@@ -180,15 +186,15 @@ export default class Parser {
                 break;
             }
             // { key: value }
-            this.expect(TokenType.Colon, "Error Parsing: Expected ':', got: " + this.at().value);
+            this.expect(TokenType.Colon, "Expected ':', got: " + this.at().value);
             const value = this.parseExpr();
             properties.push({ key, value, type: "Property" } as Property);
             if (this.at().type !== TokenType.CBrace) {
-                this.expect(TokenType.Comma, "Error Parsing: Expected ',', got: " + this.at().value);
+                this.expect(TokenType.Comma, "Expected ',', got: " + this.at().value);
             }
         }
 
-        this.expect(TokenType.CBrace, "Error Parsing: Expected '}', got: " + this.at().value);
+        this.expect(TokenType.CBrace, "Expected '}', got: " + this.at().value);
         return {
             type: "ObjectLiteral",
             properties
@@ -256,10 +262,10 @@ export default class Parser {
     }
 
     private parseArgs(): Expr[] {
-        this.expect(TokenType.OParen, "Error Parsing: Expected '(', got: " + this.at().value)
+        this.expect(TokenType.OParen, "Expected '(', got: " + this.at().value)
         const args = this.at().type === TokenType.CParen ? [] : this.parseArgsList();
 
-        this.expect(TokenType.CParen, "Error Parsing: Expected ')', got: " + this.at().value);
+        this.expect(TokenType.CParen, "Expected ')', got: " + this.at().value);
         return args;
     }
 
@@ -292,7 +298,7 @@ export default class Parser {
                 computed = true;
                 property = this.parseExpr();
 
-                this.expect(TokenType.CBracket, "Error Parsing: Expected ']', got: " + this.at().value);
+                this.expect(TokenType.CBracket, "Expected ']', got: " + this.at().value);
             }
 
             obj = {
@@ -319,7 +325,7 @@ export default class Parser {
             }
         }
 
-        this.expect(TokenType.CBracket, "Error Parsing: Expected ']', got: " + this.at().value);
+        this.expect(TokenType.CBracket, "Expected ']', got: " + this.at().value);
 
         const properties: Property[] = [];
 
@@ -336,17 +342,17 @@ export default class Parser {
     private parseWhileLoop(): Expr {
         this.advance();
 
-        this.expect(TokenType.OParen, "Error Parsing: Expected '(', got: " + this.at().value);
+        this.expect(TokenType.OParen, "Expected '(', got: " + this.at().value);
         const condition = this.parseExpr();
-        this.expect(TokenType.CParen, "Error Parsing: Expected ')', got: " + this.at().value);
+        this.expect(TokenType.CParen, "Expected ')', got: " + this.at().value);
 
-        this.expect(TokenType.OBrace, "Error Parsing: Expected '{', got: " + this.at().value);
+        this.expect(TokenType.OBrace, "Expected '{', got: " + this.at().value);
         const body: Stmt[] = [];
 
         while (!this.isEOF() && this.at().type !== TokenType.CBrace) {
             body.push(this.parseStmt());
         }
-        this.expect(TokenType.CBrace, "Error Parsing: Expected '}', got: " + this.at().value);
+        this.expect(TokenType.CBrace, "Expected '}', got: " + this.at().value);
 
         return {
             type: "WhileLoop",
@@ -377,7 +383,11 @@ export default class Parser {
                 return this.parseWhileLoop();
             case TokenType.Comment:
                 this.advance();
-                return this.parseExpr();
+                let res = this.at().type === TokenType.EOF ? null : this.parseExpr();
+                if (!res) {
+                    res = { type: "Identifier", symbol: "nil" } as Identifier;
+                }
+                return res;
             default:
                 throw new ParserError(`Unexpected token: ${this.at().value}`, this.at().line, this.at().col);
         }
