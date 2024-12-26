@@ -1,0 +1,18 @@
+--> i am a comment
+
+out.print("Hello world this is some message")
+
+--> i am another comment
+
+
+
+--<
+some comments
+out.error("Error here")
+out.warn("Hello world this is a warning")
+>--
+
+
+
+
+out.print("Hello world this is some message 22")

@@ -1,0 +1,67 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "ESNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "paths": {
+      "*": ["node_modules/*", "src/types/*"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
+
+/*
+
+SOURCE: https://www.totaltypescript.com/tsconfig-cheat-sheet
+
+{
+  "compilerOptions": {
+    /* Base Options: *\/
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2022",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+
+    /* Strictness *\/
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+
+    /* If transpiling with TypeScript: *\/
+    "module": "NodeNext",
+    "outDir": "dist",
+    "sourceMap": true,
+
+    /* AND if you're building for a library: *\/
+    "declaration": true,
+
+    /* AND if you're building for a library in a monorepo: *\/
+    "composite": true,
+    "declarationMap": true,
+
+    /* If NOT transpiling with TypeScript: *\/
+    "module": "preserve",
+    "noEmit": true,
+
+    /* If your code runs in the DOM: *\/
+    "lib": ["es2022", "dom", "dom.iterable"],
+
+    /* If your code doesn't run in the DOM: *\/
+    "lib": ["es2022"]
+  }
+}
+*/
