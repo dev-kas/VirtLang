@@ -1,6 +1,6 @@
-import { RuntimeError } from "./errors.js";
-import Environment from "./environment.js";
-import { MK_NATIVE_FN, MK_NIL, MK_NUMBER, MK_OBJECT, ObjectVal, RuntimeVal } from "./values.js";
+import Environment from "./environment";
+import { RuntimeError } from "./errors";
+import { MK_NATIVE_FN, MK_NIL, MK_NUMBER, MK_OBJECT, ObjectVal, RuntimeVal } from "./values";
 
 
 // The standard output library

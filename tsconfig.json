@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es6",              // Use ES6 or higher
-    "module": "ESNext",           // Ensure ES module output
+    "target": "ESNext",              // Use ES6 or higher
+    "module": "CommonJS",           // Ensure ES module output
     "moduleResolution": "node",   // Standard Node.js module resolution
     "esModuleInterop": true,      // Allow for default imports from non-ESM modules
     "outDir": "./dist",           // Output directory for compiled files

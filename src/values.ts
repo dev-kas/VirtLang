@@ -1,5 +1,5 @@
-import { Stmt } from "./ast.js";
-import Environment from "./environment.js";
+import { Stmt } from "./ast";
+import Environment from "./environment";
 
 export type ValueType = "nil" | "number" | "boolean" | "object" | "native-fn" | "function" | "string";
 

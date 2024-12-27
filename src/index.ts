@@ -1,8 +1,8 @@
-import { Parser } from './parser.js';
+import { Parser } from './parser';
 // import rs from 'readline-sync';
-import Environment, { createGlobalEnv } from './environment.js';
-import { evaluate } from './interpreter.js';
-import { MK_BOOL, MK_NATIVE_FN, MK_NIL, MK_NUMBER, MK_OBJECT, MK_STRING } from './values.js';
+import Environment, { createGlobalEnv } from './environment';
+import { evaluate } from './interpreter';
+import { MK_BOOL, MK_NATIVE_FN, MK_NIL, MK_NUMBER, MK_OBJECT, MK_STRING } from './values';
 
 export {
     createGlobalEnv, Environment, evaluate, MK_BOOL, MK_NATIVE_FN, MK_NIL,

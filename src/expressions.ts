@@ -1,8 +1,8 @@
-import { RuntimeError } from "./errors.js";
-import { Identifier, BinaryExpr, VarAssignmentExpr, ObjectLiteral, CallExpr, CompareExpr, MemberExpr } from "./ast.js";
-import Environment from "./environment.js";
-import { evaluate } from "./interpreter.js";
-import { RuntimeVal, MK_NUMBER, NumberVal, ObjectVal, MK_NIL, NativeFnValue, FunctionValue, MK_BOOL } from "./values.js";
+import { BinaryExpr, CallExpr, CompareExpr, Identifier, MemberExpr, ObjectLiteral, VarAssignmentExpr } from "./ast";
+import Environment from "./environment";
+import { RuntimeError } from "./errors";
+import { evaluate } from "./interpreter";
+import { FunctionValue, MK_BOOL, MK_NIL, MK_NUMBER, NativeFnValue, NumberVal, ObjectVal, RuntimeVal } from "./values";
 
 export function evalIdentifier(id: Identifier, env: Environment): RuntimeVal {
     const value = env.lookupVar(id.symbol);

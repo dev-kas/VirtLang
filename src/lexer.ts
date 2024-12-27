@@ -1,4 +1,4 @@
-import { LexerError } from "./errors.js";
+import { LexerError } from "./errors";
 
 export enum TokenType {
     Number,         // 0 - 9

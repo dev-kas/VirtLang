@@ -1,6 +1,6 @@
-import { BinaryExpr, CallExpr, CompareExpr, Expr, FnDeclaration, Identifier, IfStatement, MemberExpr, NumericLiteral, ObjectLiteral, Program, Property, Stmt, StringLiteral, TryCatchStmt, VarAssignmentExpr, VarDeclaration, WhileLoop } from "./ast.js";
-import { ParserError } from "./errors.js";
-import { Token, tokenize, TokenType } from "./lexer.js";
+import { BinaryExpr, CallExpr, CompareExpr, Expr, FnDeclaration, Identifier, IfStatement, MemberExpr, NumericLiteral, ObjectLiteral, Program, Property, Stmt, StringLiteral, TryCatchStmt, VarAssignmentExpr, VarDeclaration, WhileLoop } from "./ast";
+import { ParserError } from "./errors";
+import { Token, tokenize, TokenType } from "./lexer";
 
 export class Parser {
     private tokens: Token[] = [];

@@ -1,7 +1,7 @@
-import { FnDeclaration, IfStatement, Program, TryCatchStmt, VarDeclaration, WhileLoop } from "./ast.js";
-import Environment from "./environment.js";
-import { evaluate } from "./interpreter.js";
-import { FunctionValue, MK_NIL, MK_OBJECT, MK_STRING, RuntimeVal } from "./values.js";
+import { FnDeclaration, IfStatement, Program, TryCatchStmt, VarDeclaration, WhileLoop } from "./ast";
+import Environment from "./environment";
+import { evaluate } from "./interpreter";
+import { FunctionValue, MK_NIL, MK_STRING, RuntimeVal } from "./values";
 
 export function evalProgram(program: Program, env: Environment): RuntimeVal {
     let result: RuntimeVal = MK_NIL();

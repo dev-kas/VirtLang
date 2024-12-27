@@ -1,6 +1,6 @@
-import { RuntimeError } from "./errors.js";
-import { array, math, out, proc } from "./globals.js";
-import { MK_BOOL, MK_NIL, MK_NUMBER, RuntimeVal } from "./values.js";
+import { RuntimeError } from "./errors";
+import { array, math, out, proc } from "./globals";
+import { MK_BOOL, MK_NIL, MK_NUMBER, RuntimeVal } from "./values";
 
 export function createGlobalEnv(): Environment {
     const env = new Environment();

@@ -1,9 +1,9 @@
-import { BinaryExpr, CallExpr, CompareExpr, FnDeclaration, Identifier, IfStatement, MemberExpr, NumericLiteral, ObjectLiteral, Program, Stmt, StringLiteral, TryCatchStmt, VarAssignmentExpr, VarDeclaration, WhileLoop } from "./ast.js";
-import Environment from "./environment.js";
-import { ParserError } from "./errors.js";
-import { evalBinEx, evalCallExpr, evalComEx, evalIdentifier, evalMemberExpr, evalObjectExpr, evalVarAssignment } from "./expressions.js";
-import { evalFnDecl, evalIfStmt, evalProgram, evalTryCatch, evalVarDecl, evalWhileLoop } from "./statements.js";
-import { MK_NUMBER, MK_STRING, RuntimeVal } from "./values.js";
+import { BinaryExpr, CallExpr, CompareExpr, FnDeclaration, Identifier, IfStatement, MemberExpr, NumericLiteral, ObjectLiteral, Program, Stmt, StringLiteral, TryCatchStmt, VarAssignmentExpr, VarDeclaration, WhileLoop } from "./ast";
+import Environment from "./environment";
+import { ParserError } from "./errors";
+import { evalBinEx, evalCallExpr, evalComEx, evalIdentifier, evalMemberExpr, evalObjectExpr, evalVarAssignment } from "./expressions";
+import { evalFnDecl, evalIfStmt, evalProgram, evalTryCatch, evalVarDecl, evalWhileLoop } from "./statements";
+import { MK_NUMBER, MK_STRING, RuntimeVal } from "./values";
 
 export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
     switch (astNode.type) {
