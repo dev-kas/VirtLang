@@ -1,32 +1,31 @@
 import { expect, describe, it } from "@jest/globals";
 
-import { Environment, evaluate, MK_BOOL, MK_NIL, Parser } from "../../src/index";
+import { Environment, evaluate, MK_BOOL, MK_NATIVE_FN, MK_NIL, Parser } from "../../src/index";
+import { RuntimeVal } from "../../src/values";
 
-describe("if statement", () => {
-    it("should evaluate if statement", () => {
+describe("lambda function", () => {
+    it("should return a function", () => {
         const env = new Environment();
         env.declareVar("true", MK_BOOL(true), true);
         const parser = new Parser();
         const ast = parser.produceAST(`
-            let var = 500
-            if (true) { var = 1 }
-            var`);
+            fn(x, y) { x + y }`);
         const result = evaluate(ast, env);
-        expect(result.type).toBe("number");
-        expect(result.value).toBe(1);
+        expect(result.type).toBe("function");
     });
 
-    it("should not evaluate if statement", () => {
+    it("should evaluate automatically", () => {
         const env = new Environment();
-        env.declareVar("false", MK_BOOL(false), false);
+        let myVar = 0;
+        env.declareVar("save", MK_NATIVE_FN((args: RuntimeVal[], scope: Environment): RuntimeVal => {
+            myVar = args[0].value;
+            return MK_NIL();
+        }), false);
         const parser = new Parser();
         const ast = parser.produceAST(`
-            let var = 500
-            if (false) { var = 1 }
-            var
+            (fn () {save( 499 )})()
         `);
         const result = evaluate(ast, env);
-        expect(result.type).toBe("number");
-        expect(result.value).toBe(500);
+        expect(myVar).toEqual(499);
     })
 });
