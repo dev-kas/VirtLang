@@ -1,4 +1,4 @@
-import { BinaryExpr, CallExpr, CompareExpr, Expr, FnDeclaration, Identifier, IfStatement, MemberExpr, NumericLiteral, ObjectLiteral, Program, Property, Stmt, StringLiteral, VarAssignmentExpr, VarDeclaration, WhileLoop } from "./ast.js";
+import { BinaryExpr, CallExpr, CompareExpr, Expr, FnDeclaration, Identifier, IfStatement, MemberExpr, NumericLiteral, ObjectLiteral, Program, Property, Stmt, StringLiteral, TryCatchStmt, VarAssignmentExpr, VarDeclaration, WhileLoop } from "./ast.js";
 import { ParserError } from "./errors.js";
 import { Token, tokenize, TokenType } from "./lexer.js";
 
@@ -135,6 +135,41 @@ export class Parser {
 
         // this.expect(TokenType.SemiColon, "Expected ';', got: " + this.at().value);
         return declaration as VarDeclaration;
+    }
+
+    private parseTryCatch(): Expr {
+        this.advance(); // try
+
+        this.expect(TokenType.OBrace, "Expected '{', got: " + this.at().value);
+
+        const tryBody: Stmt[] = [];
+        
+        while (!this.isEOF() && this.at().type !== TokenType.CBrace) {
+            tryBody.push(this.parseStmt());
+        }
+
+        this.expect(TokenType.CBrace, "Expected '}', got: " + this.at().value);
+
+        this.expect(TokenType.Catch, "Expected 'catch', got: " + this.at().value);
+
+        const cVar = this.expect(TokenType.Identifier, "Expected identifier, got: " + this.at().value).value;
+
+        this.expect(TokenType.OBrace, "Expected '{', got: " + this.at().value);
+
+        const catchBody: Stmt[] = [];
+
+        while (!this.isEOF() && this.at().type !== TokenType.CBrace) {
+            catchBody.push(this.parseStmt());
+        }
+
+        this.expect(TokenType.CBrace, "Expected '}', got: " + this.at().value);
+
+        return {
+            type: "TryCatchStmt",
+            try: tryBody,
+            catch: catchBody,
+            catchVar: cVar
+        } as TryCatchStmt;
     }
 
     private parseExpr(): Expr {
@@ -388,6 +423,8 @@ export class Parser {
                     res = { type: "Identifier", symbol: "nil" } as Identifier;
                 }
                 return res;
+            case TokenType.Try:
+                return this.parseTryCatch();
             default:
                 throw new ParserError(`Unexpected token: ${this.at().value}`, this.at().line, this.at().col);
         }

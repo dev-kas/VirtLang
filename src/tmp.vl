@@ -1,28 +1,11 @@
-const constant = "i am a constant variable"
-let volatile = "i am a volatile variable"
+const myVar = "a constant"
 
-const console = {
-    log: fn (x) { out.print(x) },
-    err: fn (x) { out.error(x) },
-    advanced: {
-        print: fn (x) { out.print(x) },
-    }
+try {
+    out.print("Attempting to do something which causes error")
+    myVar = "new value"
+    out.print(myVar)
+} catch e {
+    out.print("Gracefully handled an error:", e)
 }
 
-console.log("Hello World!", "I am some unwanted arg")
-out.print("Hello World!", "I am some unwanted arg")
-
-console.err("Hello World!", "I am some unwanted arg")
-out.error("Hello World!", "I am some unwanted arg")
-
-if (true) {
-    let x = 9993
-}
-
---> console.log(x) --> should throw error
-
-out.print("now we are testing some --< comment >-- stuff") 
-out.print("4 - 3 is", 4 - --< some comment >-- 3)
-
---> advanced stuff:
-console.advanced.print("Hello World!")
+out.print("and that's how we handle errors, gracefully")

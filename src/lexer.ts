@@ -24,6 +24,8 @@ export enum TokenType {
     String,         // '...' "..."
     WhileLoop,      // while
     Comment,        // --<...>-- -->...
+    Try,            // try
+    Catch,          // catch
     EOF
 }
 
@@ -34,6 +36,8 @@ const KEYWORDS: Record<string, TokenType> = {
     "if": TokenType.If,
     "else": TokenType.Else,
     "while": TokenType.WhileLoop,
+    "try": TokenType.Try,
+    "catch": TokenType.Catch
 }
 
 export interface Token {

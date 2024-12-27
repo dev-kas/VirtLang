@@ -14,8 +14,6 @@ export {
 // function repl(env = createGlobalEnv()) {
 //     const parser = new Parser();
     
-//     // env.declareVar("x", MK_NUMBER(5));
-    
 //     console.log(`Welcome to the VirtLang REPL v0.1.0!`);
 //     while (true) {
 //         const input = rs.question(">>> ");
@@ -29,7 +27,6 @@ export {
 //     }
 // }
 
-// // import { readFileSync } from 'node:fs';
 // import { readFileSync } from 'node:fs';
 // function start(r = false) {
 //     const parser = new Parser();
@@ -42,10 +39,8 @@ export {
 //     const result = evaluate(program, env);
 //     // console.log(`Result: ${JSON.stringify(result, null, 2)}`);
 
-//     if (r) repl(env);
+//     // if (r) repl(env);
 // }
 
 // start(true);
-// // repl();
-
-
+// repl();

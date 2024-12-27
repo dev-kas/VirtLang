@@ -1,7 +1,7 @@
-import { FnDeclaration, IfStatement, Program, VarDeclaration, WhileLoop } from "./ast.js";
+import { FnDeclaration, IfStatement, Program, TryCatchStmt, VarDeclaration, WhileLoop } from "./ast.js";
 import Environment from "./environment.js";
 import { evaluate } from "./interpreter.js";
-import { FunctionValue, MK_NIL, RuntimeVal } from "./values.js";
+import { FunctionValue, MK_NIL, MK_OBJECT, MK_STRING, RuntimeVal } from "./values.js";
 
 export function evalProgram(program: Program, env: Environment): RuntimeVal {
     let result: RuntimeVal = MK_NIL();
@@ -44,8 +44,9 @@ export function evalIfStmt(statement: IfStatement, env: Environment): RuntimeVal
 
     const conditionSatisfied = evaluate(statement.condition, env);
     if (conditionSatisfied.type === "boolean" && conditionSatisfied.value) {
+        const scope = new Environment(env);
         for (const stmt of statement.body) {
-            evaluate(stmt, new Environment(env));
+            evaluate(stmt, scope);
         }
     }
 
@@ -53,16 +54,31 @@ export function evalIfStmt(statement: IfStatement, env: Environment): RuntimeVal
 }
 
 export function evalWhileLoop(statement: WhileLoop, env: Environment): RuntimeVal {
-    const s = {
-        type: "WhileLoop",
-        // declarationEnv: env,
-        body: statement.body,
-        condition: statement.condition
-    } as WhileLoop;
-
     while (evaluate(statement.condition, env).type === "boolean" && evaluate(statement.condition, env).value) {
+        const scope = new Environment(env);
         for (const stmt of statement.body) {
-            evaluate(stmt, new Environment(env));
+            evaluate(stmt, scope);
+        }
+    }
+
+    return MK_NIL();
+}
+
+export function evalTryCatch(statement: TryCatchStmt, env: Environment): RuntimeVal {
+    try {
+        const scope = new Environment(env);
+        for (const stmt of statement.try) {
+            evaluate(stmt, scope);
+        }
+    } catch (error) {
+        const scope = new Environment(env);
+        try {
+            scope.declareVar(statement.catchVar, MK_STRING((error as Error).message), false);
+        } catch (e) { // variable is already defined
+            scope.assignVar(statement.catchVar, MK_STRING((error as Error).message));
+        }
+        for (const stmt of statement.catch) {
+            evaluate(stmt, scope);
         }
     }
 

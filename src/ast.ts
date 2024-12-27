@@ -5,6 +5,7 @@ export type NodeType =
     | "IfStatement"
     | "WhileLoop"
     | "VarAssignmentExpr"
+    | "TryCatchStmt"
     | "MemberExpr"
     | "CallExpr"
     | "Property"
@@ -29,6 +30,13 @@ export interface VarDeclaration extends Stmt {
     constant: boolean;
     identifier: string;
     value?: Expr;
+}
+
+export interface TryCatchStmt extends Stmt {
+    type: "TryCatchStmt";
+    try: Stmt[];
+    catch: Stmt[];
+    catchVar: string;
 }
 
 export interface FnDeclaration extends Stmt {
