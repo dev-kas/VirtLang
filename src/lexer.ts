@@ -51,12 +51,15 @@ function isAlpha(c: string): boolean {
     return c.toUpperCase() !== c.toLowerCase();
 }
 
-function isInt (c: string): boolean {
-    // return !isNaN(parseInt(c))
+function isDigit (c: string): boolean {
     const charCode = c.charCodeAt(0);
     const bounds = [ '0'.charCodeAt(0), '9'.charCodeAt(0) ];
     return (charCode >= bounds[0] && charCode <= bounds[1]);
 };
+
+function isAlphaNumeric(c: string): boolean {
+    return isAlpha(c) || isDigit(c);
+}
 
 function isSkippable(c: string): boolean {
     return [" ", "\n", "\t", "\r"].includes(c);
@@ -126,19 +129,35 @@ export function tokenize(srcCode: string): Token[] {
             tokens.push(token(str, TokenType.String, currentLn, currentCol))
         }
         else if (src[0] === ",") tokens.push(token(src.shift(), TokenType.Comma, currentLn, currentCol))
-        else if (src[0] === ".") tokens.push(token(src.shift(), TokenType.Dot, currentLn, currentCol))
+        else if (src[0] === ".") {
+            if (src.length > 1 && isDigit(src[1])) {
+                let num = "0.";
+                src.shift();
+                currentCol++;
+                while (src.length > 0 && isDigit(src[0])) {
+                    num += src.shift();
+                    currentCol++;
+                }
+                tokens.push(token(num, TokenType.Number, currentLn, currentCol));
+            } else {
+                tokens.push(token(src.shift(), TokenType.Dot, currentLn, currentCol));
+            }
+        }
         else if (src[0] === " ") src.shift()
         else {
-            if (isInt(src[0])) {
+            if (isDigit(src[0])) {
                 let num = "";
-                while (src.length > 0 && isInt(src[0])) {
+                let hasDecimal = false;
+
+                while (src.length > 0 && isDigit(src[0]) || (src[0] === "." && !hasDecimal)) {
+                    if (src[0] === ".") hasDecimal = true;
                     num += src.shift();
                     currentCol++;
                 }
                 tokens.push(token(num, TokenType.Number, currentLn, currentCol));
             } else if (isAlpha(src[0])) {
                 let id = "";
-                while (src.length > 0 && isAlpha(src[0])) {
+                while (src.length > 0 && isAlphaNumeric(src[0])) {
                     id += src.shift();
                     currentCol++;
                 }

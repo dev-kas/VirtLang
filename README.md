@@ -13,38 +13,13 @@ Ensure you have Node.js and npm installed on your machine. You can download them
 Clone the repository and install the dependencies:
 
 ```sh
-git clone https://github.com/dev-kas/VirtLang.git MyVirtLangProject
-cd MyVirtLangProject
-npm install
-```
-
-### Building the Project
-
-To build the project, run:
-
-```sh
-npm run build
-```
-
-### Running the Interpreter
-
-To start the interpreter, run:
-
-```sh
-npm run start
-```
-
-### Development Mode
-
-For development purposes, you can use the following command to build and start the project in watch mode:
-
-```sh
-npm run dev
+mkdir myVirtLangProject && cd MyVirtLangProject
+npm install @kasz/virtlang
 ```
 
 ## Usage
 
-Create a `.vl` file with your VirtLang code. For example, `src/tmp.vl`:
+Create a `.vl` file with your VirtLang code. For example, `main.vl`:
 
 ```plaintext
 --> i am a comment
@@ -62,7 +37,28 @@ out.warn("Hello world this is a warning")
 out.print("Hello world this is some message 22")
 ```
 
-Run the interpreter to execute your VirtLang code.
+Create a `main.js` file with the following code:
+
+```js
+const { Parser, createGlobalEnv, evaluate } = require("@kasz/virtlang");
+const { readFileSync } = require("fs");
+
+const code = readFileSync("main.vl", "utf-8");
+
+const parser = new Parser();
+const env = createGlobalEnv();
+
+const ast = parser.produceAST(code);
+evaluate(ast, env);
+```
+
+Run the interpreter:
+
+```sh
+
+node main.js
+
+```
 
 ## Contributing
 

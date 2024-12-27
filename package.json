@@ -1,14 +1,14 @@
 {
-  "name": "virtlang",
+  "name": "@kasz/virtlang",
   "version": "0.1.0",
   "description": "Virt(ual)Lang(uage) - General Purpose Programming Language",
-  "main": "dist/index.js",
-  "type": "module",
+  "main": "out/index.js",
+  "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc && rollup -c",
     "start": "node dist/index.js",
-    "dev": "tsc && node dist/index.js"
+    "dev": "npm run build && node out/index.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,9 @@
     "purpose",
     "programming"
   ],
+  "files": [
+    "out"
+  ],
   "author": {
     "name": "KAS Dev",
     "email": "owner@glitchiethedev.com",
@@ -34,14 +37,13 @@
   "homepage": "https://github.com/dev-kas/VirtLang#readme",
   "devDependencies": {
     "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-terser": "^0.4.4",
     "@types/node": "^20.14.2",
     "@types/readline-sync": "^1.4.8",
+    "readline-sync": "^1.4.10",
     "rollup": "^2.79.2",
     "typescript": "^5.4.5",
     "webpack-cli": "^6.0.1"
-  },
-  "dependencies": {
-    "readline-sync": "^1.4.10"
   }
 }

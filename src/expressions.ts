@@ -79,12 +79,25 @@ export function evalComEx(comop: CompareExpr, env: Environment): RuntimeVal {
 }
 
 export function evalVarAssignment(node: VarAssignmentExpr, env: Environment): RuntimeVal {
-    if (node.assignee.type !== "Identifier") {
+    if (node.assignee.type === "Identifier") {
+        const varname = (node.assignee as Identifier).symbol;
+        return env.assignVar(varname, evaluate(node.value, env));
+    } else if (node.assignee.type === "MemberExpr") {
+        const memberExpr = node.assignee as MemberExpr;
+        const obj = evaluate(memberExpr.object, env) as ObjectVal;
+        if (obj.type !== "object") {
+            throw new RuntimeError("Cannot assign property of non-object (assigning properties of " + obj.type + ")");
+        };
+
+        const property = memberExpr.computed ? evaluate(memberExpr.value, env) : memberExpr.value;
+        const key = property.type === "Identifier" ? (property as Identifier).symbol : (property as RuntimeVal).value.toString();
+        const value = evaluate(node.value, env);
+
+        obj.properties.set(key, value);
+        return value;
+    } else {
         throw new RuntimeError("Invalid assignee in assignment expression");
     }
-
-    const varname = (node.assignee as Identifier).symbol;
-    return env.assignVar(varname, evaluate(node.value, env));
 }
 
 export function evalCallExpr(expr: CallExpr, env: Environment): RuntimeVal {
