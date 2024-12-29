@@ -7,6 +7,7 @@ export type NodeType =
     | "VarAssignmentExpr"
     | "TryCatchStmt"
     | "MemberExpr"
+    | "ReturnStmt"
     | "CallExpr"
     | "Property"
     | "ObjectLiteral"
@@ -58,6 +59,11 @@ export interface WhileLoop extends Stmt {
     type: "WhileLoop";
     body: Stmt[];
     condition: Expr;
+}
+
+export interface ReturnStmt extends Stmt {
+    type: "ReturnStmt";
+    value: Expr;
 }
 
 export interface Expr extends Stmt {}

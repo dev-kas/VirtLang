@@ -1,8 +1,8 @@
-import { BinaryExpr, CallExpr, CompareExpr, FnDeclaration, Identifier, IfStatement, MemberExpr, NumericLiteral, ObjectLiteral, Program, Stmt, StringLiteral, TryCatchStmt, VarAssignmentExpr, VarDeclaration, WhileLoop } from "./ast";
+import { BinaryExpr, CallExpr, CompareExpr, FnDeclaration, Identifier, IfStatement, MemberExpr, NumericLiteral, ObjectLiteral, Program, ReturnStmt, Stmt, StringLiteral, TryCatchStmt, VarAssignmentExpr, VarDeclaration, WhileLoop } from "./ast";
 import Environment from "./environment";
 import { ParserError } from "./errors";
 import { evalBinEx, evalCallExpr, evalComEx, evalIdentifier, evalMemberExpr, evalObjectExpr, evalVarAssignment } from "./expressions";
-import { evalFnDecl, evalIfStmt, evalProgram, evalTryCatch, evalVarDecl, evalWhileLoop } from "./statements";
+import { evalFnDecl, evalIfStmt, evalProgram, evalTryCatch, evalVarDecl, evalWhileLoop, evalReturnStmt } from "./statements";
 import { MK_NUMBER, MK_STRING, RuntimeVal } from "./values";
 
 export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
@@ -37,6 +37,8 @@ export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
             return evalWhileLoop(astNode as WhileLoop, env);
         case "TryCatchStmt":
             return evalTryCatch(astNode as TryCatchStmt, env);
+        case "ReturnStmt":
+            return evalReturnStmt(astNode as ReturnStmt, env);
         default:
             console.dir(astNode, { depth: null, color: true });
             throw new ParserError(`Unknown AST node type: ${astNode.type}`);

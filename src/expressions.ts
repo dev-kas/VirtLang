@@ -120,14 +120,20 @@ export function evalCallExpr(expr: CallExpr, env: Environment): RuntimeVal {
 
         let result: RuntimeVal = MK_NIL();
         for (const stmt of func.body) {
-            result = evaluate(stmt, scope);
+            try {
+                result = evaluate(stmt, scope);
+            } catch (error) {
+                if ((error as any).type === "ReturnStmtError") {
+                    return (error as any).value;
+                } else {
+                    throw error;
+                }
+            }
         }
-        return result;
+        return result; // for no return statement
     } else {
         throw new RuntimeError("Cannot call non-function (calling a " + fn.type + ")");
     }
-
-    
 }
 
 export function evalMemberExpr(expr: MemberExpr, env: Environment): RuntimeVal {

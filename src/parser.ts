@@ -1,6 +1,7 @@
-import { BinaryExpr, CallExpr, CompareExpr, Expr, FnDeclaration, Identifier, IfStatement, MemberExpr, NumericLiteral, ObjectLiteral, Program, Property, Stmt, StringLiteral, TryCatchStmt, VarAssignmentExpr, VarDeclaration, WhileLoop } from "./ast";
+import { BinaryExpr, CallExpr, CompareExpr, Expr, FnDeclaration, Identifier, IfStatement, MemberExpr, NumericLiteral, ObjectLiteral, Program, Property, Stmt, StringLiteral, TryCatchStmt, VarAssignmentExpr, VarDeclaration, WhileLoop, ReturnStmt } from "./ast";
 import { ParserError } from "./errors";
 import { Token, tokenize, TokenType } from "./lexer";
+import { MK_NIL } from "./values";
 
 export class Parser {
     private tokens: Token[] = [];
@@ -396,6 +397,15 @@ export class Parser {
         } as WhileLoop;
     }
 
+    private parseReturnStmt(): Expr {
+        this.advance();
+        const value = this.at().type === TokenType.EOF ? MK_NIL() : this.parseExpr();
+        return {
+            type: "ReturnStmt",
+            value
+        } as ReturnStmt;
+    }
+
     private parsePrimaryExpr(): Expr {
         const tk = this.at().type;
         let value;
@@ -425,6 +435,8 @@ export class Parser {
                 return res;
             case TokenType.Try:
                 return this.parseTryCatch();
+            case TokenType.Return:
+                return this.parseReturnStmt();
             default:
                 throw new ParserError(`Unexpected token: ${this.at().value}`, this.at().line, this.at().col);
         }

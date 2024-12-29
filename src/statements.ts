@@ -1,4 +1,4 @@
-import { FnDeclaration, IfStatement, Program, TryCatchStmt, VarDeclaration, WhileLoop } from "./ast";
+import { FnDeclaration, IfStatement, Program, ReturnStmt, TryCatchStmt, VarDeclaration, WhileLoop } from "./ast";
 import Environment from "./environment";
 import { evaluate } from "./interpreter";
 import { FunctionValue, MK_NIL, MK_STRING, RuntimeVal } from "./values";
@@ -7,7 +7,15 @@ export function evalProgram(program: Program, env: Environment): RuntimeVal {
     let result: RuntimeVal = MK_NIL();
 
     for (const stmt of program.body) {
-        result = evaluate(stmt, env);
+        try {
+            result = evaluate(stmt, env);
+        } catch (error) {
+            if ((error as any).type === "ReturnStmtError") {
+                return (error as any).value;
+            } else {
+                throw error;
+            }
+        }
     }
 
     return result;
@@ -54,14 +62,31 @@ export function evalIfStmt(statement: IfStatement, env: Environment): RuntimeVal
 }
 
 export function evalWhileLoop(statement: WhileLoop, env: Environment): RuntimeVal {
-    while (evaluate(statement.condition, env).type === "boolean" && evaluate(statement.condition, env).value) {
+    let cond = evaluate(statement.condition, env);
+    while (cond.type === "boolean" && cond.value) {
         const scope = new Environment(env);
         for (const stmt of statement.body) {
-            evaluate(stmt, scope);
+            // try {
+                evaluate(stmt, scope);
+            // } catch (error) {
+            //     if ((error as any).type === "ReturnStmtError") {
+            //         return (error as any).value;
+            //     } else {
+            //         throw error;
+            //     }
+            // }
         }
+        cond = evaluate(statement.condition, env);
     }
 
     return MK_NIL();
+}
+
+export function evalReturnStmt(statement: ReturnStmt, env: Environment): RuntimeVal {
+    throw {
+        type: "ReturnStmtError",
+        value: evaluate(statement.value, env)
+    };
 }
 
 export function evalTryCatch(statement: TryCatchStmt, env: Environment): RuntimeVal {
