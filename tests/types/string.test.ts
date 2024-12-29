@@ -2,7 +2,7 @@ import { expect, describe, it } from "@jest/globals"
 
 import { Environment, evaluate, Parser, MK_STRING } from "../../src/index";
 
-describe("types/string", () => {
+describe("string type", () => {
     it("should evaluate string", () => {
         const parser = new Parser();
         const program = parser.produceAST(`"hello world"`);

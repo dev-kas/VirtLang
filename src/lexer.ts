@@ -2,7 +2,7 @@ import { LexerError } from "./errors";
 
 export enum TokenType {
     Number,         // 0 - 9
-    Identifier,     // a - z A - Z
+    Identifier,     // a - z A - Z 0 - 9 _ $
     Equals,         // =
     BinOperator,    // / * + _
     OParen,         // (
@@ -161,7 +161,7 @@ export function tokenize(srcCode: string): Token[] {
                 tokens.push(token(num, TokenType.Number, currentLn, currentCol));
             } else if (isAlpha(src[0])) {
                 let id = "";
-                while (src.length > 0 && isAlphaNumeric(src[0])) {
+                while (src.length > 0 && (isAlphaNumeric(src[0]) || ["_", "$"].includes(src[0]))) {
                     id += src.shift();
                     currentCol++;
                 }

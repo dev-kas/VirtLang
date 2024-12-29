@@ -2,7 +2,7 @@ import { expect, describe, it } from "@jest/globals";
 
 import { Environment, evaluate, Parser, MK_NUMBER } from "../../src/index";
 
-describe("types/number", () => {
+describe("number type", () => {
     it("should evaluate number", () => {
         const parser = new Parser();
         const program = parser.produceAST(`433`);
