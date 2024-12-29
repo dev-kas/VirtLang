@@ -6,7 +6,7 @@ export default {
   input: './dist/index.js',
   output: {
     file: 'out/index.js',
-    format: 'umd',
+    format: 'cjs',
     name: 'VirtLang',
   },
   plugins: [

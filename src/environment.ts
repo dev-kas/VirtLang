@@ -1,5 +1,5 @@
 import { RuntimeError } from "./errors";
-import { array, math, out, proc } from "./globals";
+import { array, /* math, */ out /* , proc */, import_ } from "./globals";
 import { MK_BOOL, MK_NIL, MK_NUMBER, RuntimeVal } from "./values";
 
 export function createGlobalEnv(): Environment {
@@ -14,9 +14,9 @@ export function createGlobalEnv(): Environment {
     env.declareVar("inf", MK_NUMBER(Infinity), true);
 
     env.declareVar("out", out, true);
-    env.declareVar("proc", proc, true);
-    env.declareVar("math", math, true);
     env.declareVar("Array", array, true);
+    env.declareVar("import", import_, true);
+
     return env;
 }
 

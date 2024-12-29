@@ -1,5 +1,4 @@
 import { Parser } from './parser';
-// import rs from 'readline-sync';
 import Environment, { createGlobalEnv } from './environment';
 import { evaluate } from './interpreter';
 import { MK_BOOL, MK_NATIVE_FN, MK_NIL, MK_NUMBER, MK_OBJECT, MK_STRING } from './values';
